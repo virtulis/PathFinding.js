@@ -24,6 +24,8 @@ function Grid(width, height, matrix) {
      * A 2D array of nodes.
      */
     this.nodes = this._buildNodes(width, height, matrix);
+    
+    this.iteration = 0;
 }
 
 /**
@@ -71,7 +73,7 @@ Grid.prototype._buildNodes = function(width, height, matrix) {
 
 
 Grid.prototype.getNodeAt = function(x, y) {
-    return this.nodes[y][x];
+	return this.nodes[y][x].get(this.iteration)
 };
 
 
@@ -144,22 +146,22 @@ Grid.prototype.getNeighbors = function(node, allowDiagonal, dontCrossCorners) {
 
     // ↑
     if (this.isWalkableAt(x, y - 1)) {
-        neighbors.push(nodes[y - 1][x]);
+        neighbors.push(nodes[y - 1][x].get(this.iteration));
         s0 = true;
     }
     // →
     if (this.isWalkableAt(x + 1, y)) {
-        neighbors.push(nodes[y][x + 1]);
+        neighbors.push(nodes[y][x + 1].get(this.iteration));
         s1 = true;
     }
     // ↓
     if (this.isWalkableAt(x, y + 1)) {
-        neighbors.push(nodes[y + 1][x]);
+        neighbors.push(nodes[y + 1][x].get(this.iteration));
         s2 = true;
     }
     // ←
     if (this.isWalkableAt(x - 1, y)) {
-        neighbors.push(nodes[y][x - 1]);
+        neighbors.push(nodes[y][x - 1].get(this.iteration));
         s3 = true;
     }
 
@@ -181,19 +183,19 @@ Grid.prototype.getNeighbors = function(node, allowDiagonal, dontCrossCorners) {
 
     // ↖
     if (d0 && this.isWalkableAt(x - 1, y - 1)) {
-        neighbors.push(nodes[y - 1][x - 1]);
+        neighbors.push(nodes[y - 1][x - 1].get(this.iteration));
     }
     // ↗
     if (d1 && this.isWalkableAt(x + 1, y - 1)) {
-        neighbors.push(nodes[y - 1][x + 1]);
+        neighbors.push(nodes[y - 1][x + 1].get(this.iteration));
     }
     // ↘
     if (d2 && this.isWalkableAt(x + 1, y + 1)) {
-        neighbors.push(nodes[y + 1][x + 1]);
+        neighbors.push(nodes[y + 1][x + 1].get(this.iteration));
     }
     // ↙
     if (d3 && this.isWalkableAt(x - 1, y + 1)) {
-        neighbors.push(nodes[y + 1][x - 1]);
+        neighbors.push(nodes[y + 1][x - 1].get(this.iteration));
     }
 
     return neighbors;
@@ -225,6 +227,10 @@ Grid.prototype.clone = function() {
     newGrid.nodes = newNodes;
 
     return newGrid;
+};
+
+Grid.prototype.increment = function() {
+	this.iteration++;
 };
 
 module.exports = Grid;

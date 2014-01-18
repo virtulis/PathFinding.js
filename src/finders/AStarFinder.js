@@ -28,6 +28,7 @@ function AStarFinder(opt) {
  *     end positions.
  */
 AStarFinder.prototype.findPath = function(startX, startY, endX, endY, grid) {
+    grid.increment();
     var openList = new Heap(function(nodeA, nodeB) {
             return nodeA.f - nodeB.f;
         }),

@@ -23,6 +23,20 @@ function Node(x, y, walkable) {
      * @type boolean
      */
     this.walkable = (walkable === undefined ? true : walkable);
+    
+    this.iteration = -1;
+};
+
+Node.prototype = {
+
+	get: function (iteration) {
+		if (this.iteration != iteration) {
+			this.actual = new Node(this.x, this.y, this.walkable);
+			this.iteration = iteration;
+		}
+		return this.actual;
+	}
+	
 };
 
 module.exports = Node;
