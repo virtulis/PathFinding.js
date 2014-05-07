@@ -84,8 +84,12 @@ Grid.prototype.getNodeAt = function(x, y) {
  * @param {number} y - The y coordinate of the node.
  * @return {boolean} - The walkability of the node.
  */
-Grid.prototype.isWalkableAt = function(x, y) {
-    return this.isInside(x, y) && this.nodes[y][x].walkable;
+Grid.prototype.isWalkableAt = function(x, y, border) {
+	if (!this.isInside(x, y)) {
+		return false;
+	}
+	var walkable = this.nodes[y][x].get(this.iteration).walkable;
+	return (typeof walkable == 'string') ? walkable != border : walkable;
 };
 
 
@@ -145,22 +149,22 @@ Grid.prototype.getNeighbors = function(node, allowDiagonal, dontCrossCorners) {
         nodes = this.nodes;
 
     // ↑
-    if (this.isWalkableAt(x, y - 1)) {
+    if (this.isWalkableAt(x, y - 1, 'bottom') && this.isWalkableAt(x, y, 'top')) {
         neighbors.push(nodes[y - 1][x].get(this.iteration));
         s0 = true;
     }
     // →
-    if (this.isWalkableAt(x + 1, y)) {
+    if (this.isWalkableAt(x + 1, y, 'left') && this.isWalkableAt(x, y, 'right')) {
         neighbors.push(nodes[y][x + 1].get(this.iteration));
         s1 = true;
     }
     // ↓
-    if (this.isWalkableAt(x, y + 1)) {
+    if (this.isWalkableAt(x, y + 1, 'top') && this.isWalkableAt(x, y, 'bottom')) {
         neighbors.push(nodes[y + 1][x].get(this.iteration));
         s2 = true;
     }
     // ←
-    if (this.isWalkableAt(x - 1, y)) {
+    if (this.isWalkableAt(x - 1, y, 'right') && this.isWalkableAt(x, y, 'left')) {
         neighbors.push(nodes[y][x - 1].get(this.iteration));
         s3 = true;
     }
@@ -182,19 +186,19 @@ Grid.prototype.getNeighbors = function(node, allowDiagonal, dontCrossCorners) {
     }
 
     // ↖
-    if (d0 && this.isWalkableAt(x - 1, y - 1)) {
+    if (d0 && this.isWalkableAt(x - 1, y - 1, 'bottom') && this.isWalkableAt(x - 1, y, 'top') && this.isWalkableAt(x - 1, y - 1, 'right') && this.isWalkableAt(x, y - 1, 'left')) {
         neighbors.push(nodes[y - 1][x - 1].get(this.iteration));
     }
     // ↗
-    if (d1 && this.isWalkableAt(x + 1, y - 1)) {
+    if (d1 && this.isWalkableAt(x + 1, y - 1, 'bottom') && this.isWalkableAt(x + 1, y, 'top') && this.isWalkableAt(x + 1, y - 1, 'left') && this.isWalkableAt(x, y - 1, 'right')) {
         neighbors.push(nodes[y - 1][x + 1].get(this.iteration));
     }
     // ↘
-    if (d2 && this.isWalkableAt(x + 1, y + 1)) {
+    if (d2 && this.isWalkableAt(x + 1, y + 1, 'top') && this.isWalkableAt(x + 1, y, 'bottom') && this.isWalkableAt(x + 1, y + 1, 'left') && this.isWalkableAt(x, y + 1, 'right')) {
         neighbors.push(nodes[y + 1][x + 1].get(this.iteration));
     }
     // ↙
-    if (d3 && this.isWalkableAt(x - 1, y + 1)) {
+    if (d3 && this.isWalkableAt(x - 1, y + 1, 'top') && this.isWalkableAt(x - 1, y, 'bottom') && this.isWalkableAt(x - 1, y + 1, 'right') && this.isWalkableAt(x, y + 1, 'left')) {
         neighbors.push(nodes[y + 1][x - 1].get(this.iteration));
     }
 
